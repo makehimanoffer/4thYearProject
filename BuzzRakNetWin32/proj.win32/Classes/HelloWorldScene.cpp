@@ -41,8 +41,8 @@ bool HelloWorld::init()
 
     // add a "close" icon to exit the progress. it's an autorelease object
     CCMenuItemImage *pCloseItem = CCMenuItemImage::create(
-                                        "ButtonNormal.png",
-                                        "ButtonHit.png",
+                                        "../Resources/ButtonNormal.png",
+                                        "../Resources/ButtonHit.png",
                                         this,
                                         menu_selector(HelloWorld::menuCloseCallback));
     
