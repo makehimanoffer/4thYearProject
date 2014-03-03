@@ -20,17 +20,15 @@ namespace BuzzRakNet
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        RakPeerInterface peer;
-        Packet packet;
+       
         SpriteFont font;
         String quizString="";
         XDocument doc;
         String question = "";
         List<Question> questions;
         int questionNo = 0;
-        
-        DefaultMessageIDTypes temp;
-
+        ServerForGame server;
+       
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -48,13 +46,7 @@ namespace BuzzRakNet
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            peer = RakPeerInterface.GetInstance();
-            SocketDescriptor sd= new SocketDescriptor();
-            packet=new Packet();
-
-            peer.Startup(1, sd, 1);
-            peer.Connect("127.0.0.1", 60000, "", 0);
-
+            server=ServerForGame.getInstance();
             
             XDocument doc = XDocument.Load("C:/Users/David/Documents/GitHub/4thYearProjectCode/BuzzRakNetXNA4.0/BuzzRakNet/BuzzRakNetContent/QuizQuestions.xml");
             questions = new List<Question>();
@@ -109,7 +101,7 @@ namespace BuzzRakNet
         protected override void Update(GameTime gameTime)
         {
 
-            
+            //server.Update();
             KeyboardState newState = Keyboard.GetState();
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -148,54 +140,7 @@ namespace BuzzRakNet
             
 
 
-            /*
-            // TODO: Add your update logic here
-            while (true)
-            {
-                for (packet = peer.Receive();packet!=null ; peer.DeallocatePacket(packet), packet = peer.Receive())
-                {
-                    switch (packet.data[0])
-                    {
-                        case (int)DefaultMessageIDTypes.ID_REMOTE_DISCONNECTION_NOTIFICATION:
-                            System.Diagnostics.Debug.WriteLine("Another client has disconnected.\n");
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_REMOTE_CONNECTION_LOST:
-                            System.Diagnostics.Debug.WriteLine("Another client has lost the connection.\n");
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_REMOTE_NEW_INCOMING_CONNECTION:
-                            System.Diagnostics.Debug.WriteLine("Another client has connected.\n");
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_CONNECTION_REQUEST_ACCEPTED:
-                            System.Diagnostics.Debug.WriteLine("Our connection request has been accepted.\n");
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_NEW_INCOMING_CONNECTION:
-                            System.Diagnostics.Debug.WriteLine("A connection is incoming.\n");
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_NO_FREE_INCOMING_CONNECTIONS:
-                            System.Diagnostics.Debug.WriteLine("The server is full.\n");
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_DISCONNECTION_NOTIFICATION:
-
-                            System.Diagnostics.Debug.WriteLine("We have been disconnected.\n");
-
-                            break;
-                        case (int)DefaultMessageIDTypes.ID_CONNECTION_LOST:
-                            System.Diagnostics.Debug.WriteLine("Connection lost.\n");
-
-                            break;
-                        default:
-                            System.Diagnostics.Debug.WriteLine("Message with identifier %i has arrived.\n", packet.data[0]);
-                            break;
-                    }
-                }
-
-                
-                   
-                
-            }
-             */
-            //RakPeerInterface.DestroyInstance(peer);
-
+            
             base.Update(gameTime);
         }
 
@@ -209,6 +154,7 @@ namespace BuzzRakNet
             spriteBatch.Begin();
             spriteBatch.DrawString(font, quizString, new Vector2(100,200 ), Color.AntiqueWhite);
             spriteBatch.DrawString(font, question, new Vector2(200, 100), Color.AntiqueWhite);
+            server.Draw(spriteBatch, font);
             // TODO: Add your drawing code here
             spriteBatch.End();
             base.Draw(gameTime);
