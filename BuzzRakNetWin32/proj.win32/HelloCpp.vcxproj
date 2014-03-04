@@ -62,7 +62,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\david\Documents\GitHub\4thYearProject\BuzzRakNetWin32\proj.win32\RakNet;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\David\Google Drive\4th Year Project\CocosProjectWin32\proj.win32\RakNet;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
@@ -70,7 +70,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\kazmath\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\platform\win32;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\platform\third_party\win32;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\platform\third_party\win32\OGLES;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\external;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\external\chipmunk\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\CocosDenshion\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\extensions;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\projects\Classes;C:\Users\david\Documents\GitHub\4thYearProject\BuzzRakNetWin32\proj.win32;C:\Users\david\Documents\GitHub\4thYearProject\BuzzRakNetWin32\proj.win32\RakNet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\kazmath\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\platform\win32;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\platform\third_party\win32;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\cocos2dx\platform\third_party\win32\OGLES;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\external;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\external\chipmunk\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\CocosDenshion\include;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\extensions;C:\devtools\cocos2d-x-2.2.2\cocos2d-x-2.2.2\projects\Classes;C:\Users\David\Google Drive\4th Year Project\CocosProjectWin32\proj.win32;C:\Users\David\Google Drive\4th Year Project\CocosProjectWin32\proj.win32\RakNet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
