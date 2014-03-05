@@ -20,7 +20,7 @@ namespace BuzzRakNet
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-       
+        
         SpriteFont font;
         String quizString="";
         XDocument doc;
@@ -28,6 +28,8 @@ namespace BuzzRakNet
         List<Question> questions;
         int questionNo = 0;
         ServerForGame server;
+
+        
        
         public Game1()
         {
@@ -47,6 +49,7 @@ namespace BuzzRakNet
 
             base.Initialize();
             server=ServerForGame.getInstance();
+            server.Initialize();
             
             XDocument doc = XDocument.Load("C:/Users/David/Documents/GitHub/4thYearProjectCode/BuzzRakNetXNA4.0/BuzzRakNet/BuzzRakNetContent/QuizQuestions.xml");
             questions = new List<Question>();
@@ -101,7 +104,13 @@ namespace BuzzRakNet
         protected override void Update(GameTime gameTime)
         {
 
-            //server.Update();
+            server.Update();
+            quizString = "Question: " + questions[questionNo].q + "\n";
+            quizString += "A: " + questions[questionNo].A + "\n";
+            quizString += "B: " + questions[questionNo].B + "\n";
+            quizString += "C: " + questions[questionNo].C + "\n";
+            quizString += "D: " + questions[questionNo].D + "\n";
+            questionNo = server.returnQuestionNumber(); ;
             KeyboardState newState = Keyboard.GetState();
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)

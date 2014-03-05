@@ -143,7 +143,15 @@ public enum DefaultMessageIDTypes {
   ID_RESERVED_7,
   ID_RESERVED_8,
   ID_RESERVED_9,
-  ID_USER_PACKET_ENUM
+  ID_USER_PACKET_ENUM,
+  WELCOME,
+  UPDATE,
+  MY_TURN,
+  GREEN,
+  RED,
+  BLUE,
+  PURPLE,
+  BUZZER
 }
 
 }

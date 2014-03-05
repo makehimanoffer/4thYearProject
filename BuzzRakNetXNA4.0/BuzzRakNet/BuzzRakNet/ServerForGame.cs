@@ -15,24 +15,28 @@ using System.Threading;
 
 namespace BuzzRakNet
 {
+    
     class ServerForGame
     {
        public RakPeerInterface peer;
        public Packet packet;
        public DefaultMessageIDTypes temp;
-       public BitStream bsOut;
-       public RakString rs;
+       public BitStream bsOut= new BitStream();
+       public RakString rs= new RakString();
        public List<RakNetGUID> clients;
        private static ServerForGame instance;
        String textString = "";
+       public int questionNo = 0;
+       bool buzzerHit=false;
+       BitStream bsIn;
        private ServerForGame()
        {
-           Initialize();
+           
        }
        public void Initialize()
        {
            peer = RakPeerInterface.GetInstance();
-           SocketDescriptor sd = new SocketDescriptor();
+           SocketDescriptor sd = new SocketDescriptor(60000, "127.0.0.1");
            packet = new Packet();
            peer.Startup(4, sd, 1);
            peer.SetMaximumIncomingConnections(4);
@@ -44,58 +48,67 @@ namespace BuzzRakNet
 
        public void Update()
        {
-           while (true)
-           {
+           
               // textString = "THIS IS A TEXT";
-               for (packet = peer.Receive(); packet != null; peer.DeallocatePacket(packet), packet = peer.Receive())
+               packet = peer.Receive();
+               while(packet != null )
                {
-                   switch ((DefaultMessageIDTypes)packet.data[0])
-                   {
-                       case DefaultMessageIDTypes.ID_REMOTE_DISCONNECTION_NOTIFICATION:
+
+
+                   bsIn=new BitStream(packet.data,packet.length,false);
+                   bsIn.Read(packet.data, packet.length);
+	               bsIn.IgnoreBytes(1);
+                   if(packet.data[0]==(byte)DefaultMessageIDTypes.BUZZER){
+                           questionNo++;
+                           buzzerHit=true;
+                           bsOut.Write((byte)DefaultMessageIDTypes.BUZZER);
+                           textString = "A Buzzer is hit";
+                           System.Diagnostics.Debug.WriteLine("Buzzer Hit");
+                            
+                   }
+                   if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_REMOTE_DISCONNECTION_NOTIFICATION){
                            textString = "Another client has disconnected.\n";
                            System.Diagnostics.Debug.WriteLine("Another client has disconnected.\n");
-                           break;
-                       case DefaultMessageIDTypes.ID_REMOTE_CONNECTION_LOST:
+                   }
+                 if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_REMOTE_CONNECTION_LOST){
                            textString = "Another client has lost the connection.\n";
                            System.Diagnostics.Debug.WriteLine("Another client has lost the connection.\n");
-                           break;
-                       case DefaultMessageIDTypes.ID_REMOTE_NEW_INCOMING_CONNECTION:
-                           textString = "A Connection is incoming";
+                 }
+                 if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_REMOTE_NEW_INCOMING_CONNECTION){
+                           textString = "Another client has connected.\n";
                            System.Diagnostics.Debug.WriteLine("Another client has connected.\n");
-                           break;
-                       case DefaultMessageIDTypes.ID_CONNECTION_REQUEST_ACCEPTED:
+                 }
+                if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_CONNECTION_REQUEST_ACCEPTED){
                            System.Diagnostics.Debug.WriteLine("Our connection request has been accepted.\n");
-                           break;
-                       case DefaultMessageIDTypes.ID_NEW_INCOMING_CONNECTION:
+                }
+               if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_NEW_INCOMING_CONNECTION){
                            textString = "A Connection is incoming";
                            System.Diagnostics.Debug.WriteLine("A connection is incoming.\n");
-                           break;
-                       case DefaultMessageIDTypes.ID_NO_FREE_INCOMING_CONNECTIONS:
-                           textString = "A Connection is incoming";
+               }
+                if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_NO_FREE_INCOMING_CONNECTIONS){
+                           textString = "The server is full.\n";
                            System.Diagnostics.Debug.WriteLine("The server is full.\n");
-                           break;
-                       case DefaultMessageIDTypes.ID_DISCONNECTION_NOTIFICATION:
-                           textString = "A Connection is incoming";
+                }
+                if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_DISCONNECTION_NOTIFICATION){
+                           textString = "We have been disconnected.\n";
                            System.Diagnostics.Debug.WriteLine("We have been disconnected.\n");
 
-                           break;
-                       case DefaultMessageIDTypes.ID_CONNECTION_LOST:
-                           textString = "A Connection is incoming";
+                }
+                if(packet.data[0]==(byte)DefaultMessageIDTypes.ID_CONNECTION_LOST){
+                           textString = "Connection lost.\n";
                            System.Diagnostics.Debug.WriteLine("Connection lost.\n");
 
-                           break;
-                       default:
-                           System.Diagnostics.Debug.WriteLine("Message with identifier %i has arrived.\n", packet.data[0]);
-                           break;
-                   }
+                }
+                //peer.DeallocatePacket(packet);
+                packet = peer.Receive(); 
                }
-           }
+               
                 
                    
                 
             
              
-            RakPeerInterface.DestroyInstance(peer);
+           // RakPeerInterface.DestroyInstance(peer);
 
 
        }
@@ -112,6 +125,21 @@ namespace BuzzRakNet
        public void Draw(SpriteBatch spriteBatch,SpriteFont font)
        {
            spriteBatch.DrawString(font, textString, new Vector2(20, 20), Color.AntiqueWhite);
+           if (buzzerHit)
+           {
+               spriteBatch.DrawString(font, "Buzzer hit", new Vector2(40, 20), Color.AntiqueWhite);
+           }
+       }
+       public int returnQuestionNumber()
+       {
+           if (buzzerHit == true)
+           {
+               return 2;
+           }
+           else
+           {
+               return 0;
+           }
        }
     }
 }

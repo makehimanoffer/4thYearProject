@@ -45,6 +45,7 @@ public:
 	int int_message;
 	RakNet::BitStream bsOut;
 	bool red,green,blue,purple,buzzer;
+	time_t currentTime;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

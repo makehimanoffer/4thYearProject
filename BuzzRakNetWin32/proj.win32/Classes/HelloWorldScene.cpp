@@ -9,14 +9,14 @@ using namespace RakNet;
 
 enum GameMessages
 {
-	WELCOME=ID_USER_PACKET_ENUM+1,
-	UPDATE=ID_USER_PACKET_ENUM+2,
-	MY_TURN=ID_USER_PACKET_ENUM+3,
-	GREEN=ID_USER_PACKET_ENUM+4,
-	RED=ID_USER_PACKET_ENUM+5,
-	BLUE=ID_USER_PACKET_ENUM+6,
-	PURPLE=ID_USER_PACKET_ENUM+7,
-	BUZZER=ID_USER_PACKET_ENUM + 8
+	WELCOME = ID_USER_PACKET_ENUM + 1,
+        UPDATE,
+        MY_TURN,
+        GREEN,
+        RED,
+        BLUE,
+        PURPLE,
+        BUZZER
 
 	
 };
@@ -145,69 +145,47 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float dt){
 	
-	
+	CCLOG("UPDATING");
 		for (packet=peer->Receive();packet;peer->DeallocatePacket(packet), packet=peer->Receive())
 		{
-			if(red){
-				CCLOG("RED PRESSED");
-				bsOut.Write((MessageID)RED);
-				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
-				red=false;
-
-			}
-			if(green){
-				bsOut.Write((MessageID)GREEN);
-				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
-				green=false;
-			}
-			if(blue){
-				bsOut.Write((MessageID)BLUE);
-				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
-				blue=false;
-			}
-			if(purple){
-				bsOut.Write((MessageID)PURPLE);
-				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
-				
-				purple=false;
-			}
-			if(buzzer){
-				bsOut.Write((MessageID)BUZZER);
-				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
-				buzzer=false;
-			}
-
+			CCLOG("getting here");
+			
 			RakNet::BitStream bsIn(packet->data,packet->length,false);
 			bsIn.IgnoreBytes(sizeof(MessageID));
-			bsIn.Read(int_message);
+			bsIn.Read(rs);
 			switch (packet->data[0])
 			{
-			case WELCOME:
-				CCLOG("Server said I'm client number 10d", int_message);
-				
-				bsOut.Write((MessageID)UPDATE);
-				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
-				break;
+			
 			case ID_CONNECTION_REQUEST_ACCEPTED:
 				connected = true;
 				
 				break;
 			case UPDATE:
 				// report the server's new counter value
+				bsIn.Read(currentTime);
+				CCLOG("SYSTEM TIME %i",currentTime);
+				if(buzzer){
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("buzzer.wav"); 
+				bsOut.Reset();
+				bsOut.Write((MessageID)BUZZER);
 				
-				CCLOG("Server said we are now at 10d",int_message);
-				break;
-			case MY_TURN:
-				CCLOG("My Turn. Sending message.\n");
+				buzzer=false;
+				}
+				else{
 				
+				bsOut.Reset();
 				bsOut.Write((MessageID)UPDATE);
+				}
 				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
+				
 				break;
+			
 			default:
 				CCLOG("Message with identifier %i has arrived.\n", packet->data[0]);
 				break;
 			}
 			bsOut.Reset();
+			
 		}
 	
 
@@ -234,9 +212,9 @@ void HelloWorld::menuCloseCallback(CCObject* pSender)
 
 void HelloWorld::BuzzerButton(CCObject* pSender)
 {
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
-"buzzer.wav"); 
+	 
 	buzzer=true;
+	         
 	
 				
 }
@@ -245,7 +223,7 @@ void HelloWorld::greenButton(CCObject* pSender)
 {
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
 "green.wav"); 
-	buzzer=true;
+	green=true;
 	
 }
 
