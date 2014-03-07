@@ -44,7 +44,8 @@ bool HelloWorld::init()
 	{
 		return false;
 	}
-
+	firstUpdate=0;
+	
 	
 
 	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
@@ -128,7 +129,7 @@ bool HelloWorld::init()
 	RakNet::SocketDescriptor sd;
 	peer->Startup(1,&sd,1);
 	CCLOG("Starting the client.\n");
-	peer->Connect("127.0.0.1", SERVER_PORT, 0,0);
+	peer->Connect("192.168.1.100", SERVER_PORT, 0,0);
 	// add "HelloWorld" splash screen"
 	//  CCSprite* pSprite = CCSprite::create("HelloWorld.png");
 
@@ -149,7 +150,7 @@ void HelloWorld::update(float dt){
 		for (packet=peer->Receive();packet;peer->DeallocatePacket(packet), packet=peer->Receive())
 		{
 			CCLOG("getting here");
-			
+			RakSleep(3);
 			RakNet::BitStream bsIn(packet->data,packet->length,false);
 			bsIn.IgnoreBytes(sizeof(MessageID));
 			bsIn.Read(rs);
@@ -162,8 +163,12 @@ void HelloWorld::update(float dt){
 				break;
 			case UPDATE:
 				// report the server's new counter value
-				bsIn.Read(currentTime);
-				CCLOG("SYSTEM TIME %i",currentTime);
+				//bsIn.Read(currentTime);
+				//CCLOG("SYSTEM TIME %i",currentTime);
+				if(firstUpdate==0){
+					bsIn.Read(clientid);
+					firstUpdate++;
+				}
 				if(buzzer){
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("buzzer.wav"); 
 				bsOut.Reset();
@@ -171,11 +176,31 @@ void HelloWorld::update(float dt){
 				
 				buzzer=false;
 				}
+				else if(green){
+					bsOut.Reset();
+					bsOut.Write((MessageID)GREEN);
+					green=false;
+				}
+				else if(red){
+					bsOut.Reset();
+					bsOut.Write((MessageID)RED);
+					red=false;
+				}
+				else if(blue){
+					bsOut.Reset();
+					bsOut.Write((MessageID)BLUE);
+					blue=false;
+				}
+				else if(purple){
+					bsOut.Reset();
+					bsOut.Write((MessageID)PURPLE);
+					purple=false;
+				}
 				else{
-				
 				bsOut.Reset();
 				bsOut.Write((MessageID)UPDATE);
 				}
+				
 				peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
 				
 				break;

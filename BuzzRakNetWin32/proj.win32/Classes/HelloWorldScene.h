@@ -5,11 +5,16 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <iostream>
+#include <fstream>
+#include <string>
+
 #include <RakPeerInterface.h>
 
 #include <RakNetTypes.h>
 #include <MessageIdentifiers.h>
 #include <BitStream.h>
+#include <RakSleep.h>
 #define MAX_CLIENTS 10
 #define SERVER_PORT 60000
 using namespace std;
@@ -46,6 +51,9 @@ public:
 	RakNet::BitStream bsOut;
 	bool red,green,blue,purple,buzzer;
 	time_t currentTime;
+	int clientid;
+	int firstUpdate;
+	string ipAddress;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

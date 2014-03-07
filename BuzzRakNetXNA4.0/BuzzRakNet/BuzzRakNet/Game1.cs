@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using RakNet;
 using System.Xml.Linq;
+using System.Threading;
 
 namespace BuzzRakNet
 {
@@ -28,12 +29,19 @@ namespace BuzzRakNet
         List<Question> questions;
         int questionNo = 0;
         ServerForGame server;
-
+        String BuzzerAnnouncements = "";
+        public static int questionScore = 100;
+        public static string currentAnswer = "";
+        
+      // Start the thread
+      
         
        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.ToggleFullScreen();
+            
             Content.RootDirectory = "Content";
         }
 
@@ -48,6 +56,7 @@ namespace BuzzRakNet
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            
             server=ServerForGame.getInstance();
             server.Initialize();
             
@@ -68,6 +77,7 @@ namespace BuzzRakNet
             quizString += "B: " + questions[0].B + "\n";
             quizString += "C: " + questions[0].C + "\n";
             quizString += "D: " + questions[0].D + "\n";
+           
 
             
         }
@@ -103,16 +113,21 @@ namespace BuzzRakNet
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
+            
+           
             server.Update();
-            quizString = "Question: " + questions[questionNo].q + "\n";
-            quizString += "A: " + questions[questionNo].A + "\n";
-            quizString += "B: " + questions[questionNo].B + "\n";
-            quizString += "C: " + questions[questionNo].C + "\n";
-            quizString += "D: " + questions[questionNo].D + "\n";
-            questionNo = server.returnQuestionNumber(); ;
+            if (server.questionNo < questions.Count)
+            {
+                quizString = "Question: " + questions[questionNo].q + "\n";
+                quizString += "A: " + questions[questionNo].A + "\n";
+                quizString += "B: " + questions[questionNo].B + "\n";
+                quizString += "C: " + questions[questionNo].C + "\n";
+                quizString += "D: " + questions[questionNo].D + "\n";
+                questionNo = server.questionNo;
+            }
             KeyboardState newState = Keyboard.GetState();
             // Allows the game to exit
+            currentAnswer = questions[questionNo].CorrectAnswer;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
@@ -162,6 +177,7 @@ namespace BuzzRakNet
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             spriteBatch.DrawString(font, quizString, new Vector2(100,200 ), Color.AntiqueWhite);
+            spriteBatch.DrawString(font, BuzzerAnnouncements, new Vector2(100, 500), Color.AntiqueWhite);
             spriteBatch.DrawString(font, question, new Vector2(200, 100), Color.AntiqueWhite);
             server.Draw(spriteBatch, font);
             // TODO: Add your drawing code here
